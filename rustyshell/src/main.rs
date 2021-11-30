@@ -6,7 +6,6 @@ use std::{
     time::Duration,
 };
 
-use internals;
 use owo_colors::OwoColorize;
 
 fn main() {
@@ -35,11 +34,14 @@ fn main() {
 
         let argv: Vec<&str> = cmd.split(" ").collect();
         let (prog, args) = argv.split_first().unwrap();
+        let args = args.to_vec();
 
         if prog == &"cd" {
             let dir = args.first().unwrap();
             env::set_current_dir(dir).expect("couldnt change director");
             print!("{} {}", "Changed directory to".green(), dir.yellow());
+        } else if prog == &"help" {
+            internals::help::help(args);
         } else if let Ok(mut proc) = Command::new(prog).args(args).spawn() {
             proc.wait().unwrap();
         } else {
